@@ -46,9 +46,9 @@ jobs:
 
       - name: Check for uncommitted changes
         run: |
-          if [[ -n $(git status --porcelain 'skills/*/AGENTS.md') ]]; then
-            echo "Error: AGENTS.md files are not up to date"
-            echo "Run 'npm run build' and commit the changes"
-            git diff skills/*/AGENTS.md
+          if [[ -n $(git status --porcelain 'skills/*') ]]; then
+            echo "Error: Generated skill files are not up to date"
+            echo "Run 'npm run build' and commit the changes ('AGENTS.md' and '.skill' files)"
+            git status --porcelain 'skills/*'
             exit 1
           fi

@@ -36,7 +36,7 @@ We actively welcome your Pull Requests! Here's what to keep in mind:
 Before submitting your PR, please run these checks:
 
 ```bash
-npm run build  # Regenerate AGENTS.md files
+npm run build  # Regenerate AGENTS.md and .skill bundle files
 npm run check  # Format and lint
 ```
 

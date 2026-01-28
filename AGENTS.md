@@ -40,7 +40,7 @@ When agents work with Semantius:
 ## Commands
 
 ```bash
-npm run build    # Regenerate AGENTS.md files
+npm run build    # Regenerate AGENTS.md and zipped .skill bundle
 npm run check    # Format and lint (auto-fix)
 npm run ci:check # CI validation
 ```

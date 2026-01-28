@@ -77,11 +77,16 @@ Each skill follows the [Agent Skills Open Standard](https://agentskills.io/):
 
 ## Development
 
-When modifying reference files or adding new skills, you must regenerate the navigation files (`AGENTS.md`) before committing:
+When modifying reference files or adding new skills, you must regenerate the navigation files and skill bundles before committing:
 
 ```bash
 npm run build
 ```
+
+This generates:
+- `AGENTS.md`: Navigation guide for agents
+- `*.skill`: A zipped directory (ZIP archive) containing all skill files, ready for easy upload to Claude or other agents
+- `CLAUDE.md`: Symlink to `AGENTS.md`
 
 The CI will fail if these files are out of sync with the reference content.
 

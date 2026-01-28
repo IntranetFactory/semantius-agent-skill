@@ -17,6 +17,7 @@ semantius/
   AGENTS.md      # This navigation guide
   CLAUDE.md      # Symlink to AGENTS.md
   references/    # Detailed reference files
+  semantius.skill  # Ready-to-upload skill bundle
 ```
 
 ## Usage

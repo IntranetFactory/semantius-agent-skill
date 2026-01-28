@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import {
 	existsSync,
 	lstatSync,
@@ -279,6 +280,54 @@ function createClaudeSymlink(paths: SkillPaths): void {
 }
 
 /**
+ * Generate a .skill bundle file for the skill (Zipped directory)
+ */
+function generateSkillBundle(paths: SkillPaths): void {
+	const skillDir = paths.skillDir;
+	const bundleOutput = paths.bundleOutput;
+
+	if (existsSync(bundleOutput)) {
+		unlinkSync(bundleOutput);
+	}
+
+	try {
+		// Use Python to create a cross-platform ZIP with forward slashes
+		// This is much more reliable than PowerShell or local tar versions
+		const pythonCode = `
+import zipfile, os, sys
+
+skill_dir = sys.argv[1]
+output_file = sys.argv[2]
+skill_name = sys.argv[3] + '.skill'
+
+print(f"Zipping {skill_dir} to {output_file}")
+
+with zipfile.ZipFile(output_file, "w", zipfile.ZIP_DEFLATED) as z:
+    for root, dirs, files in os.walk(skill_dir):
+        for file in files:
+            if file == skill_name or file.endswith(".skill.zip") or file == "bundle.py":
+                continue
+            
+            full_path = os.path.join(root, file)
+            rel_path = os.path.relpath(full_path, skill_dir).replace(os.path.sep, "/")
+            z.write(full_path, rel_path)
+            print(f"  Added {rel_path}")
+`;
+		// Use a temporary file for the python script to avoid shell escaping nightmare
+		const tempPython = join(paths.skillDir, "bundle.py");
+		writeFileSync(tempPython, pythonCode);
+
+		const cmd = `python "${tempPython}" "${skillDir}" "${bundleOutput}" "${paths.name}"`;
+		execSync(cmd, { stdio: "inherit" });
+		unlinkSync(tempPython);
+
+		console.log(`  Generated bundle (ZIP): ${bundleOutput}`);
+	} catch (error) {
+		console.error(`  Error creating ZIP bundle with Python: ${error}`);
+	}
+}
+
+/**
  * Build AGENTS.md for a specific skill
  *
  * AGENTS.md is a concise navigation guide for AI agents, NOT a comprehensive
@@ -286,7 +335,7 @@ function createClaudeSymlink(paths: SkillPaths): void {
  * and how to find information.
  */
 function buildSkill(paths: SkillPaths): void {
-	console.log(`[${paths.name}] Building AGENTS.md...`);
+	console.log(`[${paths.name}] Building skill files...`);
 
 	// Read SKILL.md for metadata
 	const skillContent = existsSync(paths.skillFile)
@@ -322,6 +371,7 @@ function buildSkill(paths: SkillPaths): void {
 	if (existsSync(paths.referencesDir)) {
 		output.push(`  references/    # Detailed reference files`);
 	}
+	output.push(`  ${paths.name}.skill  # Ready-to-upload skill bundle`);
 	output.push("```\n");
 
 	// How to use
@@ -387,6 +437,9 @@ function buildSkill(paths: SkillPaths): void {
 
 	// Create CLAUDE.md symlink
 	createClaudeSymlink(paths);
+
+	// Generate .skill bundle (AFTER AGENTS.md is ready)
+	generateSkillBundle(paths);
 }
 
 // Run build when executed directly
