@@ -262,6 +262,48 @@ DELETE /contacts?id=eq.123&select=*
 Prefer: return=representation
 ```
 
+## When to Use `sqlToRest`
+
+For complex queries where PostgREST syntax becomes error-prone, use the `sqlToRest` tool to convert SQL to PostgREST format.
+
+### Recommended for:
+
+- **Complex boolean logic** — Nested `AND`/`OR` combinations with 3+ conditions
+- **Aggregations** — `GROUP BY`, `HAVING`, `COUNT`, `SUM`, etc.
+- **Multiple JOINs with conditions** — When filtering across several related tables
+- **Subqueries** — Not directly expressible in PostgREST syntax
+- **Uncertainty** — When unsure if your PostgREST syntax is correct
+
+### Example workflow:
+
+```javascript
+// Step 1: Convert SQL to PostgREST
+semantius:sqlToRest({
+  sql: `
+    SELECT c.name, c.email
+    FROM contacts c
+    WHERE (c.status = 'active' OR c.status = 'pending')
+      AND c.type = 'lead'
+      AND c.created_at > '2024-01-01'
+    ORDER BY c.created_at DESC
+    LIMIT 20
+  `
+})
+
+// Step 2: Execute the returned request
+semantius:postgrestRequest({
+  method: "GET",
+  path: "<path from sqlToRest result>"
+})
+```
+
+### Write PostgREST directly when:
+
+- Simple equality filters (`?status=eq.active`)
+- Basic ordering and pagination
+- Single-level embedding (`?select=*,company(name)`)
+- Straightforward `in` or `is.null` checks
+
 ## Special Features
 
 ### Count
