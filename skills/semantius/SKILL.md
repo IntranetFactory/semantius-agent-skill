@@ -469,13 +469,6 @@ semantius:postgrestRequest({
 
 ### Create a New Table
 
-**Naming rules:**
-- `table_name`: plural, lowercase, snake_case (e.g., `contacts`, `order_items`)
-- `singular`: singular form (e.g., `contact`, `order_item`)
-- `label_column`: must be a field that will exist (default: `label`, or specify like `name`)
-
-⚠️ Table names MUST be plural lowercase. `Contact` or `contact` will cause issues.
-
 ```javascript
 semantius:postgrestRequest({
   method: "POST",
@@ -509,14 +502,6 @@ A new table contains ONLY these 4 core fields:
 
 
 ### Add Fields to a Table
-
-**Valid `input_type` values:** `default` | `required` | `readonly` | `disabled` | `hidden`
-
-**Valid `format` values:** `text` | `email` | `enum` | `reference` | `date` | `date-time` | `time` | `boolean` | `integer` | `int32` | `int64` | `float` | `double` | `number` | `string` | `uuid` | `uri` | `url` | `json` | `html` | `code` | `password` | `ipv4` | `ipv6` | `hostname`
-
-**Valid `width` values:** `s` (small) | `m` (medium) | `w` (wide)
-
-⚠️ **Do NOT use values outside these lists.** If unsure, read `/references/schema-fields-schema.md`.
 
 ```javascript
 // Add email field
