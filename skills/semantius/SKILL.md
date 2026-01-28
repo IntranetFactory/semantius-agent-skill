@@ -254,7 +254,7 @@ The platform schema is stored in metadata tables. See `references/schema-tables-
 
 Defines available modules (CRM, ITSM, LMS, etc.)
 
-Key columns: `id`, `module_name`, `label`, `description`
+Key columns: `id`, `module_name`, `description`, `view_permission`, `home_page`
 
 ### tables
 
