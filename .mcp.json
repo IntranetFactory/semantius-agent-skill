@@ -2,7 +2,7 @@
 	"mcpServers": {
 		"semantius": {
 			"type": "http",
-			"url": "https://mcp.semantius.io/mcp"
+			"url": "https://jdnlvjebzatlybaysdcp.supabase.co/functions/v1/postgrest-mcp/mcp"
 		}
 	}
 }
