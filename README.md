@@ -1,57 +1,48 @@
-![Supabase Agent Skills](assets/og.png)
+# Semantius Agent Skills
 
-# Supabase Agent Skills
-
-
-Agent Skills to help developers using AI agents with Supabase. Agent Skills are
+Agent Skills to help developers using AI agents with the Semantius platform. Agent Skills are
 folders of instructions, scripts, and resources that agents like Claude Code,
-Cursor, Github Copilot, etc... can discover and use to do things more accurately
-and efficiently.
+Cursor, Github Copilot, etc. can discover and use to work more accurately
+and efficiently with Semantius deployments.
 
-The skills in this repo follow the [Agent Skills](https://agentskills.io/)
-format.
+The skills in this repo follow the [Agent Skills](https://agentskills.io/) format.
 
 ## Installation
 
 ```bash
-npx skills add supabase/agent-skills
+npx skills add semantius/agent-skills
 ```
 
 ### Claude Code Plugin
 
-You can also install the skills in this repo as Claude Code plugins
+You can also install the skills in this repo as Claude Code plugins:
 
 ```bash
-/plugin marketplace add supabase/agent-skills
-/plugin install postgres-best-practices@supabase-agent-skills
+/plugin marketplace add semantius/agent-skills
+/plugin install semantius@semantius-agent-skills
 ```
 
 ## Available Skills
 
 <details>
-<summary><strong>supabase-postgres-best-practices</strong></summary>
+<summary><strong>semantius</strong></summary>
 
-Postgres performance optimization guidelines from Supabase. Contains references
-across 8 categories, prioritized by impact.
+Universal System of Records platform skill for PostgREST-based data management.
 
 **Use when:**
 
-- Writing SQL queries or designing schemas
-- Implementing indexes or query optimization
-- Reviewing database performance issues
-- Configuring connection pooling or scaling
-- Working with Row-Level Security (RLS)
+- Working with Semantius platform deployments
+- Querying or managing data via PostgREST
+- Discovering modules, tables, and fields dynamically
+- Administering the platform (creating tables, managing permissions)
+- Working with RBAC and RLS policies
 
-**Categories covered:**
+**Key concepts:**
 
-- Query Performance (Critical)
-- Connection Management (Critical)
-- Schema Design (High)
-- Concurrency & Locking (Medium-High)
-- Security & RLS (Medium-High)
-- Data Access Patterns (Medium)
-- Monitoring & Diagnostics (Low-Medium)
-- Advanced Features (Low)
+- All access is via PostgREST — no direct SQL
+- Schema is dynamic — always introspect before operating
+- Data dictionary approach — modifying `tables`/`fields` creates actual database objects
+- RBAC via RLS — permissions control what users can access
 
 </details>
 
@@ -63,23 +54,28 @@ relevant tasks are detected.
 **Examples:**
 
 ```
-Optimize this Postgres query
+Query contacts from the CRM module
 ```
 
 ```
-Review my schema for performance issues
+Create a new table in the ITSM module
 ```
 
 ```
-Help me add proper indexes to this table
+Set up RBAC permissions for the sales team
 ```
+
+## Documentation
+
+- [Semantius Platform Documentation](https://docs.semantius.io)
+- [PostgREST Syntax Reference](./skills/semantius/references/postgrest-syntax.md)
+- [RBAC Schema Reference](./skills/semantius/references/rbac-schema.md)
 
 ## Skill Structure
 
 Each skill follows the [Agent Skills Open Standard](https://agentskills.io/):
 
 - `SKILL.md` - Required skill manifest with frontmatter (name, description, metadata)
-- `AGENTS.md` - Compiled references document (generated)
 - `references/` - Individual reference files
 
 ## License
