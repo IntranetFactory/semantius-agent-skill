@@ -13,7 +13,7 @@ Role-Based Access Control tables that manage user permissions.
 users
   └── user_roles (many-to-many)
         └── roles
-              └── roles_permissions (many-to-many)
+              └── role_permissions (many-to-many)
                     └── permissions
                           └── permission_hierarchy (self-referential)
 ```
@@ -41,7 +41,7 @@ Role definitions.
 | name | text | Yes | Unique role name (e.g., "admin", "sales_rep") |
 | label | text | Yes | Display label (e.g., "Administrator", "Sales Representative") |
 | description | text | No | Role description |
-| is_system | boolean | No | Whether this is a system role |
+| is_system | boolean | No | System role required by Semantius (cannot be deleted) |
 | created_at | timestamp | Auto | Creation timestamp |
 
 ## permissions
@@ -79,7 +79,7 @@ Maps users to roles (many-to-many).
 | role_id | integer | Yes | Foreign key to roles.id |
 | created_at | timestamp | Auto | Creation timestamp |
 
-## roles_permissions
+## role_permissions
 
 Maps roles to permissions (many-to-many).
 
@@ -165,7 +165,7 @@ postgrestRequest({
 ```javascript
 postgrestRequest({
   method: "POST",
-  path: "/roles_permissions",
+  path: "/role_permissions",
   body: [
     { role_id: 2, permission_id: 1 },
     { role_id: 2, permission_id: 2 }
@@ -192,7 +192,7 @@ postgrestRequest({
 // Get user with roles and permissions
 postgrestRequest({
   method: "GET",
-  path: "/users?id=eq.10&select=*,user_roles(roles(name,roles_permissions(permissions(name))))"
+  path: "/users?id=eq.10&select=*,user_roles(roles(name,role_permissions(permissions(name))))"
 })
 ```
 
@@ -201,6 +201,6 @@ postgrestRequest({
 ```javascript
 postgrestRequest({
   method: "GET",
-  path: "/roles_permissions?role_id=eq.2&permissions.name=eq.crm.read&select=id,permissions(name)"
+  path: "/role_permissions?role_id=eq.2&permissions.name=eq.crm.read&select=id,permissions(name)"
 })
 ```
