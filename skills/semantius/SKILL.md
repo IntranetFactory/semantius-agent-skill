@@ -39,6 +39,21 @@ Always introspect to discover what's available before operating on data.
 
 ## Available MCP Tools
 
+---
+
+## Quick Reference: What to Read When
+
+Before performing these tasks, you MUST read the corresponding reference file:
+
+| Task | Read First | Critical Info |
+|------|------------|---------------|
+| **Adding fields to tables** | `/references/schema-fields-schema.md` | Lines 42-93: Valid format values (40+ formats) |
+| **Creating tables** | `/references/schema-tables-schema.md` | Required fields, auto-generated columns |
+| **Querying data** | `/references/api-postgrest-syntax.md` | PostgREST operators, filters |
+| **Configuring RBAC** | `/references/rbac-rbac-schema.md` | Users, roles, permissions structure |
+
+---
+
 ### getCurrentUser
 
 Retrieves profile information for the authenticated user including email, roles, permissions, accessible modules, and metadata.
