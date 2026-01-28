@@ -46,8 +46,10 @@ Reference files are named `{prefix}-{topic}.md` (e.g., `query-missing-indexes.md
 
 **Schema Metadata** (`schema-`):
 - `references/schema-fields-schema.md`
+- `references/schema-modules-schema.md`
 - `references/schema-tables-schema.md`
+- `references/schema-webhook-schema.md`
 
 ---
 
-*4 reference files across 3 categories*
+*6 reference files across 3 categories*
