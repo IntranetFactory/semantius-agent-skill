@@ -10,7 +10,8 @@
 		"lint": "biome lint --write .",
 		"lint:check": "biome lint .",
 		"check": "biome check --write .",
-		"ci:check": "biome ci ."
+		"ci:check": "biome ci .",
+		"build": "npm run build --prefix packages/skills-build"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11"

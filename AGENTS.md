@@ -40,11 +40,12 @@ When agents work with Semantius:
 ## Commands
 
 ```bash
+npm run build    # Regenerate AGENTS.md files
 npm run check    # Format and lint (auto-fix)
 npm run ci:check # CI validation
 ```
 
-**Before completing any task**, run `npm run check` to ensure CI passes.
+**Before completing any task**, run `npm run check` and `npm run build` to ensure CI passes.
 
 ## Creating Reference Files
 

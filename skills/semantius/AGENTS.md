@@ -4,7 +4,10 @@
 
 ## Overview
 
-|
+Universal System of Records platform management via PostgREST API.
+Use when working with business data modules (CRM, ITSM, LMS, etc.),
+querying or managing records, or configuring the platform (admin).
+All operations use PostgREST — there is no direct SQL access.
 
 ## Structure
 
@@ -22,18 +25,28 @@ semantius/
 2. Browse `references/` for detailed documentation on specific topics
 3. Reference files are loaded on-demand - read only what you need
 
+## Reference Categories
+
+| Priority | Category | Impact | Prefix |
+|----------|----------|--------|--------|
+| 1 | API Syntax | high | `api-` |
+| 2 | Schema Metadata | high | `schema-` |
+| 3 | Access Control | high | `rbac-` |
+
+Reference files are named `{prefix}-{topic}.md` (e.g., `query-missing-indexes.md`).
+
 ## Available References
 
-**fields** (`fields-`):
-- `references/schema-fields-schema.md`
-
-**postgrest** (`postgrest-`):
+**API Syntax** (`api-`):
 - `references/api-postgrest-syntax.md`
 
-**rbac** (`rbac-`):
+**Access Control** (`rbac-`):
 - `references/rbac-rbac-schema.md`
 
-**tables** (`tables-`):
+**Schema Metadata** (`schema-`):
+- `references/schema-fields-schema.md`
 - `references/schema-tables-schema.md`
 
 ---
+
+*4 reference files across 3 categories*

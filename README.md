@@ -75,8 +75,15 @@ Set up RBAC permissions for the sales team
 
 Each skill follows the [Agent Skills Open Standard](https://agentskills.io/):
 
-- `SKILL.md` - Required skill manifest with frontmatter (name, description, metadata)
-- `references/` - Individual reference files
+## Development
+
+When modifying reference files or adding new skills, you must regenerate the navigation files (`AGENTS.md`) before committing:
+
+```bash
+npm run build
+```
+
+The CI will fail if these files are out of sync with the reference content.
 
 ## License
 

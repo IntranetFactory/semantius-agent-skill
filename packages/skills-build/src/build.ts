@@ -88,8 +88,18 @@ function parseSkillFrontmatter(content: string): Record<string, unknown> {
 	const result: Record<string, unknown> = {};
 	let inMetadata = false;
 	const metadataObj: Record<string, string> = {};
+	let currentMultilineKey = "";
 
 	for (const line of frontmatterContent.split("\n")) {
+		// Handle multiline continuation
+		if (currentMultilineKey && (line.startsWith("  ") || line.trim() === "")) {
+			const val = (result[currentMultilineKey] as string) || "";
+			const lineToAdd = line.startsWith("  ") ? line.slice(2) : line;
+			result[currentMultilineKey] = val + (val ? "\n" : "") + lineToAdd;
+			continue;
+		}
+		currentMultilineKey = "";
+
 		// Check for metadata block start
 		if (line.trim() === "metadata:") {
 			inMetadata = true;
@@ -123,7 +133,7 @@ function parseSkillFrontmatter(content: string): Record<string, unknown> {
 		const colonIndex = line.indexOf(":");
 		if (colonIndex === -1) continue;
 
-		const currentKey = line.slice(0, colonIndex).trim();
+		const key = line.slice(0, colonIndex).trim();
 		let value = line.slice(colonIndex + 1).trim();
 
 		if (
@@ -133,8 +143,11 @@ function parseSkillFrontmatter(content: string): Record<string, unknown> {
 			value = value.slice(1, -1);
 		}
 
-		if (value) {
-			result[currentKey] = value;
+		if (value === "|") {
+			currentMultilineKey = key;
+			result[key] = "";
+		} else if (value) {
+			result[key] = value;
 		}
 	}
 
@@ -368,7 +381,7 @@ function buildSkill(paths: SkillPaths): void {
 	);
 
 	// Write AGENTS.md
-	writeFileSync(paths.agentsOutput, output.join("\n"));
+	writeFileSync(paths.agentsOutput, `${output.join("\n")}\n`);
 	console.log(`  Generated: ${paths.agentsOutput}`);
 	console.log(`  Total references: ${referenceFiles.length}`);
 

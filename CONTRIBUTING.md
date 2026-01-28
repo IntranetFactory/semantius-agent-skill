@@ -36,6 +36,7 @@ We actively welcome your Pull Requests! Here's what to keep in mind:
 Before submitting your PR, please run these checks:
 
 ```bash
+npm run build  # Regenerate AGENTS.md files
 npm run check  # Format and lint
 ```
 
@@ -46,9 +47,10 @@ To add a reference to an existing skill:
 1. Navigate to `skills/{skill-name}/references/`
 2. Create a new markdown file for your reference
 3. Write explanation and examples
-4. Run validation:
+4. Run validation and update navigation:
 
 ```bash
+npm run build
 npm run check
 ```
 
@@ -90,9 +92,10 @@ Instructions for agents using this skill.
 
 Add markdown files to the `references/` directory with detailed documentation.
 
-### 4. Validate
+### 4. Validate and build
 
 ```bash
+npm run build
 npm run check
 ```
 
