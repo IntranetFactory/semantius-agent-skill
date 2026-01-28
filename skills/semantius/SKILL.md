@@ -12,6 +12,13 @@ description: |
 Semantius is a dynamic platform where each deployment has different modules and tables.
 Always introspect to discover what's available before operating on data.
 
+> **WARNING: Never assume column names — always introspect first!**
+>
+> Column names vary between deployments and may differ from documentation examples.
+> Before ANY data operation, query `?select=*&limit=1` on the target table to verify
+> the actual column names. Assumptions based on documentation or common patterns will
+> lead to errors.
+
 ## Available MCP Tools
 
 ### getCurrentUser
@@ -74,6 +81,9 @@ semantius:postgrestRequest({
 })
 ```
 
+> **Note:** For bulk inserts, all objects MUST have identical keys (PGRST102 error).
+> See `references/api-postgrest-syntax.md` for details.
+
 Update record:
 ```javascript
 semantius:postgrestRequest({
@@ -121,7 +131,9 @@ semantius:sqlToRest({
 
 ## Introspection — Always Do This First
 
-The platform is dynamic. Before any operation, discover what's available.
+> **CRITICAL:** The platform is dynamic. Before ANY data operation, you MUST introspect
+> to discover actual table and column names. Never guess or assume based on documentation
+> examples — always verify by querying the schema or fetching a sample row first.
 
 ### 1. Get Current User Context
 
@@ -178,6 +190,20 @@ semantius:postgrestRequest({
   path: "/fields?table_name=eq.contacts&order=field_order.asc"
 })
 ```
+
+### 6. Verify Actual Columns Before Insert/Update
+
+Before inserting or updating data, always fetch a sample row to confirm actual column names:
+
+```javascript
+// Verify actual column names exist
+semantius:postgrestRequest({
+  method: "GET",
+  path: "/contacts?select=*&limit=1"
+})
+```
+
+This prevents errors from mismatched column names between documentation and actual schema.
 
 ---
 
@@ -551,10 +577,11 @@ When errors occur:
 
 ## Best Practices
 
-1. **Always introspect first** — Call `getCurrentUser`, then query `modules`, `tables`, `fields` to understand the schema
+1. **Always introspect first** — Call `getCurrentUser`, then query `modules`, `tables`, `fields` to understand the schema. **Never assume column names from documentation — always query `?select=*&limit=1` to verify actual schema before insert/update operations.**
 2. **Use sqlToRest for complex queries** — When PostgREST syntax gets complicated
 3. **Follow naming conventions** — Plural tables, snake_case fields, lowercase everything
 4. **Always filter DELETE/UPDATE** — Never omit the WHERE clause equivalent
 5. **Check permissions before admin operations** — Use `getCurrentUser` to verify
 6. **Query metadata to understand schema** — Don't assume tables/fields exist
 7. **Test incrementally** — Start with simple queries, add complexity gradually
+8. **Bulk inserts require identical keys** — All objects in a bulk insert array must have the exact same keys (PGRST102 error)
