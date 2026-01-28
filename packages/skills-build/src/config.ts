@@ -40,7 +40,7 @@ export function getSkillPaths(skillName: string): SkillPaths {
 		skillDir,
 		referencesDir: join(skillDir, "references"),
 		agentsOutput: join(skillDir, "AGENTS.md"),
-		bundleOutput: join(skillDir, `${skillName}.skill`),
+		bundleOutput: join(SKILLS_ROOT, `${skillName}.skill`),
 		claudeSymlink: join(skillDir, "CLAUDE.md"),
 		skillFile: join(skillDir, "SKILL.md"),
 	};

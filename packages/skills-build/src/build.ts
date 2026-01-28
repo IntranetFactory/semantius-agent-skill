@@ -1,5 +1,5 @@
-import { execSync } from "node:child_process";
 import {
+	createWriteStream,
 	existsSync,
 	lstatSync,
 	readdirSync,
@@ -10,6 +10,7 @@ import {
 	writeFileSync,
 } from "node:fs";
 import { basename, join } from "node:path";
+import archiver from "archiver";
 import {
 	discoverSkills,
 	getSkillPaths,
@@ -282,7 +283,7 @@ function createClaudeSymlink(paths: SkillPaths): void {
 /**
  * Generate a .skill bundle file for the skill (Zipped directory)
  */
-function generateSkillBundle(paths: SkillPaths): void {
+async function generateSkillBundle(paths: SkillPaths): Promise<void> {
 	const skillDir = paths.skillDir;
 	const bundleOutput = paths.bundleOutput;
 
@@ -290,41 +291,32 @@ function generateSkillBundle(paths: SkillPaths): void {
 		unlinkSync(bundleOutput);
 	}
 
-	try {
-		// Use Python to create a cross-platform ZIP with forward slashes
-		// This is much more reliable than PowerShell or local tar versions
-		const pythonCode = `
-import zipfile, os, sys
+	return new Promise((resolve, reject) => {
+		const output = createWriteStream(bundleOutput);
+		const archive = archiver("zip", {
+			zlib: { level: 9 }, // Sets the compression level.
+		});
 
-skill_dir = sys.argv[1]
-output_file = sys.argv[2]
-skill_name = sys.argv[3] + '.skill'
+		output.on("close", () => {
+			console.log(
+				`  Generated bundle (ZIP): ${bundleOutput} (${archive.pointer()} bytes)`,
+			);
+			resolve();
+		});
 
-print(f"Zipping {skill_dir} to {output_file}")
+		archive.on("error", (err) => {
+			reject(err);
+		});
 
-with zipfile.ZipFile(output_file, "w", zipfile.ZIP_DEFLATED) as z:
-    for root, dirs, files in os.walk(skill_dir):
-        for file in files:
-            if file == skill_name or file.endswith(".skill.zip") or file == "bundle.py":
-                continue
-            
-            full_path = os.path.join(root, file)
-            rel_path = os.path.relpath(full_path, skill_dir).replace(os.path.sep, "/")
-            z.write(full_path, rel_path)
-            print(f"  Added {rel_path}")
-`;
-		// Use a temporary file for the python script to avoid shell escaping nightmare
-		const tempPython = join(paths.skillDir, "bundle.py");
-		writeFileSync(tempPython, pythonCode);
+		archive.pipe(output);
 
-		const cmd = `python "${tempPython}" "${skillDir}" "${bundleOutput}" "${paths.name}"`;
-		execSync(cmd, { stdio: "inherit" });
-		unlinkSync(tempPython);
+		// Append files from skill directory
+		archive.glob("**/*", {
+			cwd: skillDir,
+		});
 
-		console.log(`  Generated bundle (ZIP): ${bundleOutput}`);
-	} catch (error) {
-		console.error(`  Error creating ZIP bundle with Python: ${error}`);
-	}
+		archive.finalize();
+	});
 }
 
 /**
@@ -334,7 +326,7 @@ with zipfile.ZipFile(output_file, "w", zipfile.ZIP_DEFLATED) as z:
  * documentation dump. It helps agents understand the skill directory structure
  * and how to find information.
  */
-function buildSkill(paths: SkillPaths): void {
+async function buildSkill(paths: SkillPaths): Promise<void> {
 	console.log(`[${paths.name}] Building skill files...`);
 
 	// Read SKILL.md for metadata
@@ -364,6 +356,7 @@ function buildSkill(paths: SkillPaths): void {
 	// Directory structure
 	output.push(`## Structure\n`);
 	output.push("```");
+	output.push(`${paths.name}.skill  # Ready-to-upload skill bundle`);
 	output.push(`${paths.name}/`);
 	output.push(`  SKILL.md       # Main skill file - read this first`);
 	output.push(`  AGENTS.md      # This navigation guide`);
@@ -371,7 +364,6 @@ function buildSkill(paths: SkillPaths): void {
 	if (existsSync(paths.referencesDir)) {
 		output.push(`  references/    # Detailed reference files`);
 	}
-	output.push(`  ${paths.name}.skill  # Ready-to-upload skill bundle`);
 	output.push("```\n");
 
 	// How to use
@@ -439,7 +431,7 @@ function buildSkill(paths: SkillPaths): void {
 	createClaudeSymlink(paths);
 
 	// Generate .skill bundle (AFTER AGENTS.md is ready)
-	generateSkillBundle(paths);
+	await generateSkillBundle(paths);
 }
 
 // Run build when executed directly
@@ -448,35 +440,42 @@ const isMainModule =
 	process.argv[1]?.endsWith("build.js");
 
 if (isMainModule) {
-	const targetSkill = process.argv[2];
+	const run = async () => {
+		const targetSkill = process.argv[2];
 
-	if (targetSkill) {
-		// Build specific skill
-		if (!validateSkillExists(targetSkill)) {
-			console.error(`Error: Skill "${targetSkill}" not found in skills/`);
-			const available = discoverSkills();
-			if (available.length > 0) {
-				console.error(`Available skills: ${available.join(", ")}`);
+		if (targetSkill) {
+			// Build specific skill
+			if (!validateSkillExists(targetSkill)) {
+				console.error(`Error: Skill "${targetSkill}" not found in skills/`);
+				const available = discoverSkills();
+				if (available.length > 0) {
+					console.error(`Available skills: ${available.join(", ")}`);
+				}
+				process.exit(1);
 			}
-			process.exit(1);
-		}
-		buildSkill(getSkillPaths(targetSkill));
-	} else {
-		// Build all skills
-		const skills = discoverSkills();
-		if (skills.length === 0) {
-			console.log("No skills found in skills/ directory.");
-			process.exit(0);
+			await buildSkill(getSkillPaths(targetSkill));
+		} else {
+			// Build all skills
+			const skills = discoverSkills();
+			if (skills.length === 0) {
+				console.log("No skills found in skills/ directory.");
+				process.exit(0);
+			}
+
+			console.log(`Found ${skills.length} skill(s): ${skills.join(", ")}\n`);
+			for (const skill of skills) {
+				await buildSkill(getSkillPaths(skill));
+				console.log("");
+			}
 		}
 
-		console.log(`Found ${skills.length} skill(s): ${skills.join(", ")}\n`);
-		for (const skill of skills) {
-			buildSkill(getSkillPaths(skill));
-			console.log("");
-		}
-	}
+		console.log("✅ Done!");
+	};
 
-	console.log("✅ Done!");
+	run().catch((err) => {
+		console.error("Build failed:", err);
+		process.exit(1);
+	});
 }
 
 export {

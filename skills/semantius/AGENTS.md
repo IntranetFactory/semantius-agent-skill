@@ -12,12 +12,12 @@ All operations use PostgREST — there is no direct SQL access.
 ## Structure
 
 ```
+semantius.skill  # Ready-to-upload skill bundle
 semantius/
   SKILL.md       # Main skill file - read this first
   AGENTS.md      # This navigation guide
   CLAUDE.md      # Symlink to AGENTS.md
   references/    # Detailed reference files
-  semantius.skill  # Ready-to-upload skill bundle
 ```
 
 ## Usage
