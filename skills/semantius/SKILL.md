@@ -119,7 +119,16 @@ semantius:sqlToRest({
 
 ---
 
-## Introspection — Always Do This First
+## Introspection — The ONLY Way to Discover Schema
+
+⚠️ **Important:** There is no schema discovery endpoint at `/`. You cannot query the root path or use database introspection commands directly. The metadata tables (`modules`, `tables`, `fields`) ARE the schema discovery mechanism.
+
+**Never attempt:**
+- ❌ `GET /` (requires secret API key, will return 401 Unauthorized)
+- ❌ Querying table paths without first verifying they exist in `/tables`
+- ❌ Using column names without first checking `/fields`
+
+**The Rule:** Always query the metadata tables first to discover what exists, then query the actual data.
 
 The platform is dynamic. Before any operation, discover what's available.
 
@@ -436,6 +445,17 @@ semantius:postgrestRequest({
 
 Note: This automatically creates the physical database table.
 
+**⚠️ What Gets Created Automatically:**
+
+A new table contains ONLY these 4 core fields:
+- `id` (integer, primary key)
+- `label` (text) - Named according to your `label_column` value (e.g., "name" if you specified `label_column: "name"`)
+- `created_at` (timestamp)
+- `updated_at` (timestamp)
+
+**Common mistake:** Assuming fields like `email`, `phone`, `description`, `status` exist automatically. They don't - you must create them.
+
+
 ### Add Fields to a Table
 
 ```javascript
@@ -462,7 +482,8 @@ semantius:postgrestRequest({
     table_name: "contacts",
     field_name: "status",
     title: "Status",
-    format: "choice",
+    format: "enum",
+    enum_values: ["active", "inactive"],
     is_nullable: false,
     input_type: "required",
     field_order: 20
