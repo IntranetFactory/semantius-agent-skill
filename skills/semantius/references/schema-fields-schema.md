@@ -1,4 +1,9 @@
-# Fields Schema Reference
+---
+impact: HIGH
+title: Fields Schema Reference
+---
+
+## Fields Schema Reference
 
 The `fields` table defines all columns/fields for data tables.
 
@@ -80,8 +85,7 @@ When a row is deleted:
 
 ## Examples
 
-### Add an email field
-
+**Correct (Add an email field):**
 ```javascript
 postgrestRequest({
   method: "POST",
@@ -99,8 +103,22 @@ postgrestRequest({
 })
 ```
 
-### Add a foreign key field
+**Incorrect (Invalid format for email):**
+```javascript
+postgrestRequest({
+  method: "POST",
+  path: "/fields",
+  body: {
+    table_name: "contacts",
+    field_name: "email",
+    title: "Email Address",
+    format: "text", // Should be "email" for validation
+    input_type: "required"
+  }
+})
+```
 
+**Correct (Add a foreign key field):**
 ```javascript
 postgrestRequest({
   method: "POST",

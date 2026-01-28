@@ -68,8 +68,8 @@ Set up RBAC permissions for the sales team
 ## Documentation
 
 - [Semantius Platform Documentation](https://docs.semantius.io)
-- [PostgREST Syntax Reference](./skills/semantius/references/postgrest-syntax.md)
-- [RBAC Schema Reference](./skills/semantius/references/rbac-schema.md)
+- [PostgREST Syntax Reference](./skills/semantius/references/api-postgrest-syntax.md)
+- [RBAC Schema Reference](./skills/semantius/references/rbac-rbac-schema.md)
 
 ## Skill Structure
 

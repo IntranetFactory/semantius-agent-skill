@@ -38,7 +38,7 @@ The skill works with three MCP tools:
 ## Documentation
 
 - [SKILL.md](./SKILL.md) — Main skill instructions
-- [references/postgrest-syntax.md](./references/postgrest-syntax.md) — PostgREST query reference
-- [references/tables-schema.md](./references/tables-schema.md) — Tables metadata schema
-- [references/fields-schema.md](./references/fields-schema.md) — Fields metadata schema
-- [references/rbac-schema.md](./references/rbac-schema.md) — RBAC tables reference
+- [references/api-postgrest-syntax.md](./references/api-postgrest-syntax.md) — PostgREST query reference
+- [references/schema-tables-schema.md](./references/schema-tables-schema.md) — Tables metadata schema
+- [references/schema-fields-schema.md](./references/schema-fields-schema.md) — Fields metadata schema
+- [references/rbac-rbac-schema.md](./references/rbac-rbac-schema.md) — RBAC tables reference

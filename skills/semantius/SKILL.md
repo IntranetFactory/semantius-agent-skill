@@ -183,7 +183,7 @@ semantius:postgrestRequest({
 
 ## PostgREST Query Syntax
 
-See `references/postgrest-syntax.md` for complete documentation.
+See `references/api-postgrest-syntax.md` for complete documentation.
 
 ### Quick Reference
 
@@ -248,7 +248,7 @@ See `references/postgrest-syntax.md` for complete documentation.
 
 ## Data Dictionary Schema
 
-The platform schema is stored in metadata tables. See `references/tables-schema.md` and `references/fields-schema.md` for complete documentation.
+The platform schema is stored in metadata tables. See `references/schema-tables-schema.md` and `references/schema-fields-schema.md` for complete documentation.
 
 ### modules
 
@@ -288,7 +288,7 @@ Key columns:
 
 ## RBAC Tables
 
-See `references/rbac-schema.md` for complete documentation.
+See `references/rbac-rbac-schema.md` for complete documentation.
 
 ### users
 

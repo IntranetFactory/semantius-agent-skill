@@ -1,4 +1,9 @@
-# Tables Schema Reference
+---
+impact: HIGH
+title: Tables Schema Reference
+---
+
+## Tables Schema Reference
 
 The `tables` table defines all data tables in the system.
 
@@ -45,8 +50,7 @@ When a row is deleted from `tables`:
 
 ## Examples
 
-### Create a contacts table
-
+**Correct (Create a contacts table):**
 ```javascript
 postgrestRequest({
   method: "POST",
@@ -66,8 +70,20 @@ postgrestRequest({
 })
 ```
 
-### Query all tables in a module
+**Incorrect (Table name is singular):**
+```javascript
+postgrestRequest({
+  method: "POST",
+  path: "/tables",
+  body: {
+    table_name: "contact", // Should be plural: "contacts"
+    singular: "contact",
+    singular_label: "Contact"
+  }
+})
+```
 
+**Correct (Query all tables in a module):**
 ```javascript
 postgrestRequest({
   method: "GET",

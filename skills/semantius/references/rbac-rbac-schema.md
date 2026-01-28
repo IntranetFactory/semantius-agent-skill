@@ -1,4 +1,9 @@
-# RBAC Schema Reference
+---
+impact: HIGH
+title: RBAC Schema Reference
+---
+
+## RBAC Schema Reference
 
 Role-Based Access Control tables that manage user permissions.
 
@@ -100,8 +105,7 @@ When a user has `parent_permission`, they automatically have `child_permission`.
 
 ## Common Workflows
 
-### Create a new role
-
+**Correct (Create a new role):**
 ```javascript
 postgrestRequest({
   method: "POST",
@@ -114,8 +118,19 @@ postgrestRequest({
 })
 ```
 
-### Create permissions for a module
+**Incorrect (Missing required fields):**
+```javascript
+postgrestRequest({
+  method: "POST",
+  path: "/roles",
+  body: {
+    name: "sales_manager"
+    // Missing label field
+  }
+})
+```
 
+**Correct (Create permissions for a module):**
 ```javascript
 // Create base permissions
 postgrestRequest({

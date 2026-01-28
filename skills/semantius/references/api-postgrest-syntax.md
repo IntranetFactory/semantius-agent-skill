@@ -1,4 +1,9 @@
-# PostgREST Query Syntax Reference
+---
+impact: HIGH
+title: PostgREST Query Syntax Reference
+---
+
+## PostgREST Query Syntax Reference
 
 Complete reference for PostgREST query syntax used in Semantius.
 
@@ -45,25 +50,30 @@ Prefix any operator with `not.`:
 
 ### Logical Operators
 
-**AND (default):**
+**Correct (AND default):**
 Multiple conditions are AND'd by default:
-```
+```http
 /contacts?status=eq.active&type=eq.lead
 ```
 
-**Explicit AND:**
-```
+**Correct (Explicit AND):**
+```http
 /contacts?and=(status.eq.active,type.eq.lead)
 ```
 
-**OR:**
-```
+**Correct (OR usage):**
+```http
 /contacts?or=(status.eq.active,status.eq.pending)
 ```
 
-**Complex combinations:**
-```
+**Correct (Complex combinations):**
+```http
 /contacts?and=(or=(status.eq.active,status.eq.pending),type.eq.lead)
+```
+
+**Incorrect (Missing operator):**
+```http
+/contacts?status=active,pending
 ```
 
 ## Ordering
