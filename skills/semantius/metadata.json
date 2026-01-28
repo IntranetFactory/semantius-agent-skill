@@ -1,0 +1,12 @@
+{
+  "name": "semantius",
+  "version": "1.0.0",
+  "description": "Universal System of Records platform skill for PostgREST-based data management",
+  "author": "Semantius",
+  "license": "MIT",
+  "keywords": ["postgrest", "database", "crm", "itsm", "system-of-records", "rbac"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/semantius/agent-skills"
+  }
+}
