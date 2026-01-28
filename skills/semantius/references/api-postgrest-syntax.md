@@ -198,6 +198,30 @@ Content-Type: application/json
 ]
 ```
 
+**IMPORTANT: All objects must have identical keys (PGRST102)**
+
+PostgREST requires every object in a bulk insert array to have the exact same keys. Missing keys or extra keys in any object will cause the entire insert to fail with error code `PGRST102`.
+
+**Correct:** All objects have identical keys
+```json
+[
+  {"name": "John", "email": "john@example.com", "status": "active"},
+  {"name": "Jane", "email": "jane@example.com", "status": "pending"}
+]
+```
+
+**Incorrect:** Objects have different keys (will fail)
+```json
+[
+  {"name": "John", "email": "john@example.com"},
+  {"name": "Jane", "status": "pending", "width": 100}
+]
+```
+
+If you have objects with varying fields, either:
+1. Normalize them to have identical keys (use `null` for missing values)
+2. Insert them one at a time with separate POST requests
+
 ### Return inserted record
 
 ```

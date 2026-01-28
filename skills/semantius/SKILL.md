@@ -12,6 +12,31 @@ description: |
 Semantius is a dynamic platform where each deployment has different modules and tables.
 Always introspect to discover what's available before operating on data.
 
+> ⚠️ **Do not create artifacts for data operations. Use direct tool calls.**
+
+## Usage Guidelines
+
+**Direct tool calls vs Artifacts:**
+- Use direct tool calls (`Semantius:postgrestRequest`, `Semantius:getCurrentUser`) for:
+  - Creating modules, tables, fields
+  - Inserting, updating, or deleting records
+  - Querying data
+  - Any one-off or administrative task
+
+- Only create artifacts when the user explicitly requests an interactive UI or app
+
+**Always introspect using metadata tables:**
+- Query `/tables?table_name=eq.{name}` to understand table configuration (permissions, label columns, etc.)
+- Query `/fields?table_name=eq.{name}&order=field_order.asc` to get full field definitions (formats, enums, searchable, required, etc.)
+- Do not use `?select=*&limit=1` on data tables - this only shows raw values, not schema metadata
+- Read the reference files in `/references/` for authoritative schema details - do not rely solely on the summary column lists in this file
+
+**PostgREST bulk insert constraint:**
+- When inserting multiple records as an array, all objects must have identical keys
+- If objects have different optional fields, insert them one at a time
+
+---
+
 ## Available MCP Tools
 
 ### getCurrentUser
@@ -74,6 +99,9 @@ semantius:postgrestRequest({
 })
 ```
 
+> **Note:** For bulk inserts, all objects MUST have identical keys (PGRST102 error).
+> See `references/api-postgrest-syntax.md` for details.
+
 Update record:
 ```javascript
 semantius:postgrestRequest({
@@ -130,7 +158,9 @@ semantius:sqlToRest({
 
 **The Rule:** Always query the metadata tables first to discover what exists, then query the actual data.
 
-The platform is dynamic. Before any operation, discover what's available.
+> **CRITICAL:** The platform is dynamic. Before ANY data operation, you MUST introspect
+> to discover actual table and column names. Never guess or assume based on documentation
+> examples — always verify by querying the `/tables` and `/fields` metadata tables.
 
 ### 1. Get Current User Context
 
@@ -572,10 +602,11 @@ When errors occur:
 
 ## Best Practices
 
-1. **Always introspect first** — Call `getCurrentUser`, then query `modules`, `tables`, `fields` to understand the schema
+1. **Always introspect first** — Call `getCurrentUser`, then query `modules`, `tables`, `fields` metadata to understand the schema
 2. **Use sqlToRest for complex queries** — When PostgREST syntax gets complicated
 3. **Follow naming conventions** — Plural tables, snake_case fields, lowercase everything
 4. **Always filter DELETE/UPDATE** — Never omit the WHERE clause equivalent
 5. **Check permissions before admin operations** — Use `getCurrentUser` to verify
 6. **Query metadata to understand schema** — Don't assume tables/fields exist
 7. **Test incrementally** — Start with simple queries, add complexity gradually
+8. **Bulk inserts require identical keys** — All objects in a bulk insert array must have the exact same keys (PGRST102 error)
