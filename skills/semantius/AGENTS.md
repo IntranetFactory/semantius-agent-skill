@@ -30,9 +30,10 @@ semantius/
 
 | Priority | Category | Impact | Prefix |
 |----------|----------|--------|--------|
-| 1 | API Syntax | high | `api-` |
-| 2 | Schema Metadata | high | `schema-` |
-| 3 | Access Control | high | `rbac-` |
+| 1 | Tasks | high | `task-` |
+| 2 | API Syntax | high | `api-` |
+| 3 | Schema Metadata | medium | `schema-` |
+| 4 | Access Control | high | `rbac-` |
 
 Reference files are named `{prefix}-{topic}.md` (e.g., `query-missing-indexes.md`).
 
@@ -45,11 +46,11 @@ Reference files are named `{prefix}-{topic}.md` (e.g., `query-missing-indexes.md
 - `references/rbac-rbac-schema.md`
 
 **Schema Metadata** (`schema-`):
-- `references/schema-fields-schema.md`
-- `references/schema-modules-schema.md`
-- `references/schema-tables-schema.md`
 - `references/schema-webhook-schema.md`
+
+**Tasks** (`task-`):
+- `references/task-manage-schema.md`
 
 ---
 
-*6 reference files across 3 categories*
+*4 reference files across 4 categories*

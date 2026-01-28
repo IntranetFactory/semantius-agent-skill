@@ -45,12 +45,11 @@ Always introspect to discover what's available before operating on data.
 
 Before performing these tasks, you MUST read the corresponding reference file:
 
-| Task | Read First | Critical Info |
-|------|------------|---------------|
-| **Adding fields to tables** | `/references/schema-fields-schema.md` | Lines 42-93: Valid format values (40+ formats) |
-| **Creating tables** | `/references/schema-tables-schema.md` | Required fields, auto-generated columns |
-| **Querying data** | `/references/api-postgrest-syntax.md` | PostgREST operators, filters |
-| **Configuring RBAC** | `/references/rbac-rbac-schema.md` | Users, roles, permissions structure |
+| Task | Read First |
+|------|------------|
+| **Creating/modifying modules, tables, fields** | `/references/task-manage-schema.md` |
+| **Querying data** | `/references/api-postgrest-syntax.md` |
+| **Configuring RBAC** | `/references/rbac-rbac-schema.md` |
 
 ---
 
@@ -453,90 +452,22 @@ semantius:postgrestRequest({
 
 **Important:** Always call `getCurrentUser` first to verify admin permissions.
 
-### Create a New Module
+### Managing Modules, Tables, and Fields
 
-```javascript
-semantius:postgrestRequest({
-  method: "POST",
-  path: "/modules",
-  body: {
-    name: "crm",
-    label: "Customer Relationship Management",
-    description: "CRM module for managing customers, contacts, and deals"
-  }
-})
-```
+**Read `/references/task-manage-schema.md` before creating or modifying schema.**
 
-### Create a New Table
+This reference contains:
+- All valid values for `format`, `input_type`, `width`
+- Naming conventions and constraints
+- Complete examples with common mistakes to avoid
+- Update and delete operations
 
-```javascript
-semantius:postgrestRequest({
-  method: "POST",
-  path: "/tables",
-  body: {
-    table_name: "contacts",
-    singular: "contact",
-    singular_label: "Contact",
-    plural_label: "Contacts",
-    module_id: 1,
-    view_permission: "crm.read",
-    edit_permission: "crm.write",
-    id_column: "id",
-    label_column: "name",
-    description: "Contact records"
-  }
-})
-```
+Quick overview of the workflow:
+1. Create module (logical container)
+2. Create table (physical table auto-created)
+3. Add fields (each triggers ALTER TABLE)
 
-Note: This automatically creates the physical database table.
-
-**⚠️ What Gets Created Automatically:**
-
-A new table contains ONLY these 4 core fields:
-- `id` (integer, primary key)
-- `label` (text) - Named according to your `label_column` value (e.g., "name" if you specified `label_column: "name"`)
-- `created_at` (timestamp)
-- `updated_at` (timestamp)
-
-**Common mistake:** Assuming fields like `email`, `phone`, `description`, `status` exist automatically. They don't - you must create them.
-
-
-### Add Fields to a Table
-
-```javascript
-// Add email field
-semantius:postgrestRequest({
-  method: "POST",
-  path: "/fields",
-  body: {
-    table_name: "contacts",
-    field_name: "email",
-    title: "Email Address",
-    format: "email",
-    is_nullable: false,
-    input_type: "required",
-    field_order: 10
-  }
-})
-
-// Add status field
-semantius:postgrestRequest({
-  method: "POST",
-  path: "/fields",
-  body: {
-    table_name: "contacts",
-    field_name: "status",
-    title: "Status",
-    format: "enum",
-    enum_values: ["active", "inactive"],
-    is_nullable: false,
-    input_type: "required",
-    field_order: 20
-  }
-})
-```
-
-Note: Each field insert triggers an ALTER TABLE operation.
+**Remember:** New tables only have `id`, `label`, `created_at`, `updated_at`. All other fields must be explicitly created.
 
 ### Create a Permission
 
